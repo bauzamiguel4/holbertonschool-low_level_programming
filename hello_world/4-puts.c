@@ -1,8 +1,6 @@
 #include <stdio.h>
 
-/*
- *prints phrase exactly followed by a new line
- */
+/*prints phrase exactly followed by a new line*/
 int main(void)
 {
   puts("\"Programming is like building a multilingual puzzle");
