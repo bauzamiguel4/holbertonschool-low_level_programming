@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-/**                                                                                                                 
- * main - prints alphabet in lowercase                                                                              
- *                                                                                                                  
- * Return: Always 0 (Success)                                                                                       
+/**
+ * main - prints alphabet in lowercase
+ *
+ * Return: Always 0 (Success)
  */
 int main(void)
 {
@@ -13,14 +13,13 @@ int main(void)
         {
                 putchar(letter);
         }
-	
+
 	for (letter = 'A'; letter <= 'Z'; letter++)
 	{
 		putchar(letter);
 	}
-	
+
         putchar('\n');
 
         return (0);
 }
-
