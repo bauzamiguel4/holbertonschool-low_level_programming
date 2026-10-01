@@ -20,6 +20,32 @@ void close_file(int fd)
 }
 
 /**
+ * check_io_status - checks if read/write operations failed
+ * @stat: the result of the read/write operation
+ * @filename: the name of the file
+ * @mode: 'O' for opening/reading, 'W' for writing
+ * @fd_from: file descriptor for reading
+ * @fd_to: file descriptor for writing
+ */
+void check_io_status(int stat, char *filename, char mode, int fd_from, int fd_to)
+{
+	if (mode == 'O' && stat == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", filename);
+		exit(98);
+	}
+	else if (mode == 'W' && stat == -1)
+	{
+		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", filename);
+		if (fd_from != -1)
+			close_file(fd_from);
+		if (fd_to != -1)
+			close_file(fd_to);
+		exit(99);
+	}
+}
+
+/**
  * main - copies the contents of a file to another file
  * @argc: the number of arguments supplied to the program
  * @argv: an array of pointers to the arguments
@@ -38,39 +64,19 @@ int main(int argc, char *argv[])
 	}
 
 	fd_from = open(argv[1], O_RDONLY);
-	if (fd_from == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-		exit(98);
-	}
+	check_io_status(fd_from, argv[1], 'O', -1, -1);
 
 	fd_to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
-	if (fd_to == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
-		close_file(fd_from);
-		exit(99);
-	}
+	check_io_status(fd_to, argv[2], 'W', fd_from, -1);
 
 	while ((r = read(fd_from, buffer, 1024)) > 0)
 	{
 		w = write(fd_to, buffer, r);
 		if (w == -1 || w != r)
-		{
-			dprintf(STDERR_FILENO, "Error: Can't write to %s\n", argv[2]);
-			close_file(fd_from);
-			close_file(fd_to);
-			exit(99);
-		}
+			check_io_status(-1, argv[2], 'W', fd_from, fd_to);
 	}
 
-	if (r == -1)
-	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", argv[1]);
-		close_file(fd_from);
-		close_file(fd_to);
-		exit(98);
-	}
+	check_io_status(r, argv[1], 'O', fd_from, fd_to);
 
 	close_file(fd_from);
 	close_file(fd_to);
