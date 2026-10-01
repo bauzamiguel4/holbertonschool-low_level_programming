@@ -27,11 +27,13 @@ void close_file(int fd)
  * @fd_from: file descriptor for reading
  * @fd_to: file descriptor for writing
  */
-void check_io_status(int stat, char *filename, char mode, int fd_from, int fd_to)
+void check_io_status(int stat, char *filename, char mode,
+		     int fd_from, int fd_to)
 {
 	if (mode == 'O' && stat == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n", filename);
+		dprintf(STDERR_FILENO, "Error: Can't read from file %s\n",
+			filename);
 		exit(98);
 	}
 	else if (mode == 'W' && stat == -1)
